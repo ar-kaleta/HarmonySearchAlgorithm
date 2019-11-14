@@ -1,9 +1,8 @@
-from harmonyMemory import Harmony, HarmonyMemory
-from typing import List, Any, Union
+from src.harmonyMemory import Harmony, HarmonyMemory
 from random import random
 import time
 
-# t = time.clock()
+t = time.clock()
 
 
 def algorithm(
@@ -53,6 +52,6 @@ def algorithm(
     return harmony_memory
 
 
-print(algorithm(10, 10, 1000000, 0.9, 0.4, 0.01))
+print(algorithm(100, 100, 100000, 0.9, 0.4, 0.01))
 
-# print(time.clock() - t)
+print(time.clock() - t)
