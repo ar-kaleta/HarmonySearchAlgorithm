@@ -1,15 +1,25 @@
 from random import random
-from typing import List, Any
+from typing import List
+from abc import ABC, abstractmethod
+
+class OptimizationProblem(ABC):
+    @abstractmethod
+    def calculate_obj_fun(self, solution):
+        pass
+
+    @abstractmethod
+    def generate_dec_variable(self, data: list) -> int:
+        pass
 
 
 class Harmony:
-    def __init__(self, num_of_cols: int) -> None:
+    def __init__(self, num_of_cols: int, opt_problem: OptimizationProblem) -> None:
         self.notes = []
         self.val_of_object_fun = 0
 
-        for col in range(0, num_of_cols):
-            self.notes.append(random())
-        self.val_of_object_fun = Harmony.calculate_obj_fun(self.notes)
+        for col in range(0, len(opt_problem.data)):
+            self.notes.append(opt_problem.generate_dec_variable(self.notes))
+        self.val_of_object_fun = opt_problem.calculate_obj_fun(self.notes)
 
     def __getitem__(self, item):
         return self.notes[item]
@@ -23,21 +33,13 @@ class Harmony:
     def __len__(self):
         return len(self.notes)
 
-    @staticmethod
-    def calculate_obj_fun(vector: List):
-        return sum(vector)
-
-    @staticmethod
-    def generate_note():
-        return random()
-
 
 class HarmonyMemory:
-    def __init__(self, num_of_rows: int, num_of_cols: int):
+    def __init__(self, num_of_rows: int, num_of_cols: int, opt_problem: OptimizationProblem) -> None:
         self.harmonies: List[Harmony] = []
 
         for row in range(0, num_of_rows):
-            self.harmonies.append(Harmony(num_of_cols))
+            self.harmonies.append(Harmony(num_of_cols, opt_problem))
 
     def __getitem__(self, item):
         return self.harmonies[item]
@@ -53,6 +55,3 @@ class HarmonyMemory:
 
     def __len__(self):
         return len(self.harmonies)
-
-
-
