@@ -1,15 +1,5 @@
-from random import random
 from typing import List
-from abc import ABC, abstractmethod
-
-class OptimizationProblem(ABC):
-    @abstractmethod
-    def calculate_obj_fun(self, solution):
-        pass
-
-    @abstractmethod
-    def generate_dec_variable(self, data: list) -> int:
-        pass
+from src.optimizationProblem import OptimizationProblem
 
 
 class Harmony:
