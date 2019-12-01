@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 
-
 class OptimizationProblem(ABC):
     @abstractmethod
     def calculate_obj_fun(self, solution):

@@ -13,8 +13,8 @@ def generate_tsp_xls(
     y_coordinate = []
     coordinates = []
     places = []
-
-    for place_id in range(1, number_of_places + 1):
+    i = 1
+    while len(places) < number_of_places:
         x = randint(0, max_coordinate)
         y = randint(0, max_coordinate)
         pair = (x, y)
@@ -22,7 +22,8 @@ def generate_tsp_xls(
             coordinates.append(pair)
             x_coordinate.append(x)
             y_coordinate.append(y)
-            places.append(place_id)
+            places.append(i)
+            i += 1
     df = DataFrame({
         'place_id': places,
         'x_coordinate': x_coordinate,
@@ -36,6 +37,7 @@ class Tsp(OptimizationProblem):
         df = read_excel('../testcases/' + filename + '.xlsx')
         self.data = {str(df.index[i]): (df.loc[i][1], df.loc[i][2]) for i in range(df.index[-1] + 1)}
         self.distance = count_distance(self.data)
+        self.gain = 0
 
     def calculate_obj_fun(self, solution: list):
         distance = 0
@@ -49,33 +51,48 @@ class Tsp(OptimizationProblem):
     def generate_dec_variable(self, data: list) -> int:
         temp_data = list(set(self.data.keys()) - set(data))
         return choice(temp_data)
-    # TODO: fix this function
-    def take_dec_variable_hm(self, harmony_memory: HarmonyMemory, new_harmony: list, note_index: int) -> [int, int]:
-        dec_variables: list = []
-        note_index_ = note_index
-        for elem in harmony_memory:
-            dec_variables.append(elem[note_index_])
-        dec_variable_to_rand = list(set(dec_variables)-set(new_harmony))
-        while len(dec_variable_to_rand) is not 0:
-            note_index_ = note_index_ + 1
-            for elem in harmony_memory:
-                dec_variables.append(elem[note_index_])
-            dec_variable_to_rand = list(set(dec_variables) - set(new_harmony))
-        new_note = choice(dec_variable_to_rand)
-        rand_index = dec_variables.index(new_note)
-        if harmony_memory[rand_index][note_index] != new_note: print("Kurwa")
-        return [new_note, rand_index]
 
+    # TODO: Test this function
+    def take_dec_variable_hm(self, harmony_memory: HarmonyMemory, new_harmony: list, note_index: int) -> int:
+        self.gain = 0
+
+        while (note_index + self.gain) < len(harmony_memory[0])-1:
+            # Try to find dec variable in note_index column of harmony memory
+            [new_note, is_ok] = rand_note_for_note_index(harmony_memory, new_harmony, note_index+self.gain)
+            if is_ok:
+                return new_note
+            else:
+                # If it doesn't work try with next column
+                self.gain += 1
+
+        dec_variable_to_rand = list(set(harmony_memory[0])-set(new_harmony))
+        new_note = choice(dec_variable_to_rand)
+        return new_note
+
+    # TODO: Fix and test this function
     def pitch_adj_mechanism(self, harmony_memory: HarmonyMemory, new_harmony: list, new_note: int, hm_bandwidth: float,
-                            harmony_index: int) -> int:
+                            note_index: int) -> int:
+        harmony_index = harmony_memory.index(new_note, note_index+self.gain)
         note_to_rand = []
         for note in harmony_memory[harmony_index]:
             if note not in new_harmony:
                 note_to_rand.append(note)
         index = note_to_rand.index(new_note)
-        # TODO: Test this solution
         index = int(index + hm_bandwidth * randint(-index, len(note_to_rand) - index))
         return note_to_rand[index]
+
+
+def rand_note_for_note_index(harmony_memory: HarmonyMemory, new_harmony: list, note_index: int) -> [int, bool]:
+    dec_variables: list = []
+    note_index_ = note_index
+    for elem in harmony_memory:
+        dec_variables.append(elem[note_index_])
+    dec_variable_to_rand = list(set(dec_variables) - set(new_harmony))
+    if len(dec_variable_to_rand) is not 0:
+        new_note = choice(dec_variable_to_rand)
+        return [new_note, True]
+    else:
+        return [-1, False]
 
 
 def count_distance(data: dict) -> dict:

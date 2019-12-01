@@ -1,6 +1,6 @@
 from random import random
 import time
-from src.tsp import Tsp
+from src.tsp import Tsp, generate_tsp_xls
 from src.harmonyMemory import HarmonyMemory
 from src.optimizationProblem import OptimizationProblem
 
@@ -29,11 +29,11 @@ def algorithm(
         for note_index in range(0, len(harmony_memory[1])):
             # deciding if the next note should be generated or taken from memory
             if hm_considering_rate > random():
-                [new_note, harmony_index] = opt_problem.take_dec_variable_hm(harmony_memory, new_harmony, note_index)
+                new_note = opt_problem.take_dec_variable_hm(harmony_memory, new_harmony, note_index)
                 # deciding if the pitch adjusting mechanism should be used
                 if hm_pitch_adjusting_rate > random():
                     new_note = opt_problem.pitch_adj_mechanism(harmony_memory, new_harmony, new_note, hm_bandwidth,
-                                                               harmony_index)
+                                                               note_index)
             else:
                 new_note = opt_problem.generate_dec_variable(new_harmony)
 
@@ -51,14 +51,15 @@ def algorithm(
     return harmony_memory
 
 
+generate_tsp_xls()
 tsp = Tsp()
 
 print(algorithm(
     num_of_rows_hm=100,
     num_of_cols_hm=100,
     num_of_iterations=100,
-    hm_considering_rate=0.1,
-    hm_pitch_adjusting_rate=0.4,
+    hm_considering_rate=0.9,
+    hm_pitch_adjusting_rate=0,
     hm_bandwidth=0.01,
     opt_problem=tsp))
 

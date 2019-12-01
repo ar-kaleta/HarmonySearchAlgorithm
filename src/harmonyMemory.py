@@ -45,3 +45,9 @@ class HarmonyMemory:
 
     def __len__(self):
         return len(self.harmonies)
+
+    def index(self, value_to_find: int, note_index):
+        for index in range(0, len(self.harmonies)):
+            if self.harmonies[index][note_index] is value_to_find:
+                return index
+        raise ValueError
