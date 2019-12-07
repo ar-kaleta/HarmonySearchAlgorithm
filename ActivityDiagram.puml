@@ -1,0 +1,39 @@
+@startuml
+start
+:Inicjalizacja pamięci harmonii HM losowymi wartościami,
+obliczanie wartość funkcji celu dla każdej harmonii.]
+:iteration = 1]
+while(Główna pętla algorytmu) is (iteracja < liczba_iteracji)
+    : note_index = 1]
+    while(Tworzenie nowego rozwiązania new_harmony, \n przechodzenie po elementach rozwiązania) is (note_index < num_of_note_index)
+
+        if (rand > HMCR) then (Tak)
+            :Wybieranie losowego rozwiązania z HM, o indeksie rand_index]
+            :new_note = HM(rand_index, note_index)]
+            if (rand > PAR) then (Tak)
+                :Skorzystanie z mechanizmu dostrajania wysokości tonu]
+            else(Nie)
+            endif
+
+        else(Nie)
+            :new_note = losowa wartość zmiennej decyzyjnej]
+        endif
+        :new_harmony[note_index] = new_note]
+        :note_index += 1]
+
+    endwhile (note_index > num_of_note_index)
+    :Obliczenie wartości funkcji celu dla new_harmony]
+    if (Czy nowe rozwiązanie jest lepsze, pod względem funkcji celu, od najgorszego z HM) then (Tak)
+        :Zamiana rozwiązań]
+    else(Nie)
+    endif
+
+    :iteration += 1]
+
+
+endwhile (iteracja >= liczba_iteracji)
+
+:Zwróć najlepsze rozwiązanie spośród HM]
+
+end
+@enduml
