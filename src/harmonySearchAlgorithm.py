@@ -1,24 +1,22 @@
 from random import random
-import time
-from src.tsp import Tsp, generate_tsp_xls
 from src.harmonyMemory import HarmonyMemory
 from src.optimizationProblem import OptimizationProblem
+from src.visualization import OutputData
 
 
-t = time.clock()
 
 
 def algorithm(
         num_of_rows_hm: int,
-        num_of_cols_hm: int,
         num_of_iterations,
         hm_considering_rate,
         hm_pitch_adjusting_rate,
         hm_bandwidth,
-        opt_problem: OptimizationProblem
+        opt_problem: OptimizationProblem,
+        out_data: OutputData
 ) -> HarmonyMemory:
     # initialize the harmony memory randomly and calculate object function
-    harmony_memory = HarmonyMemory(num_of_rows_hm, num_of_cols_hm, opt_problem)
+    harmony_memory = HarmonyMemory(num_of_rows_hm, opt_problem)
     iteration = 1
 
     # main algorithm loop
@@ -35,7 +33,7 @@ def algorithm(
                     new_note = opt_problem.pitch_adj_mechanism(harmony_memory, new_harmony, new_note, hm_bandwidth,
                                                                note_index)
             else:
-                new_note = opt_problem.generate_dec_variable(new_harmony)
+                new_note = opt_problem.generate_dec_variable(new_harmony)[0]
 
             new_harmony.append(new_note)
 
@@ -43,24 +41,18 @@ def algorithm(
         # calculating new harmony objective function value
         val_of_object_fun = opt_problem.calculate_obj_fun(new_harmony)
 
+
+
         # comparing new harmony with the worst from the memory by the objective function and exchanging solutions
-        if harmony_memory[len(harmony_memory) - 1].val_of_object_fun < val_of_object_fun:
-            harmony_memory[len(harmony_memory) - 1].notes = new_harmony
-            harmony_memory[len(harmony_memory) - 1].val_of_object_fun = val_of_object_fun
+        if harmony_memory[-1].val_of_object_fun >= val_of_object_fun:
+            if (new_harmony, val_of_object_fun) not in harmony_memory:
+
+                # saving new_harmony obj. function in output data
+                out_data.add_data(iteration, val_of_object_fun)
+
+                harmony_memory[len(harmony_memory) - 1].notes = new_harmony
+                harmony_memory[len(harmony_memory) - 1].val_of_object_fun = val_of_object_fun
         iteration = iteration + 1
     return harmony_memory
 
 
-generate_tsp_xls()
-tsp = Tsp()
-
-print(algorithm(
-    num_of_rows_hm=100,
-    num_of_cols_hm=100,
-    num_of_iterations=100,
-    hm_considering_rate=0.9,
-    hm_pitch_adjusting_rate=0,
-    hm_bandwidth=0.01,
-    opt_problem=tsp))
-
-print(time.clock() - t)
