@@ -31,7 +31,7 @@ output_data.data_to_xls()
 #     optimization_problem.print_solution(x[0])
 # parameters.append(parameter)
 # obj_functions.append(x[0].val_of_object_fun)
-optimization_problem.print_solution(x[0])
+optimization_problem.visualize_solution(x[0])
 # print(x[0].val_of_object_fun)
 
 #print([x_.val_of_object_fun for x_ in x])
