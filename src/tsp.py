@@ -1,8 +1,9 @@
 from random import randint, choice
 from pandas import DataFrame, read_excel
 from math import sqrt
-from src.harmonyMemory import HarmonyMemory
+from src.harmonyMemory import HarmonyMemory, Harmony
 from src.optimizationProblem import OptimizationProblem
+import matplotlib.pyplot as plt
 
 
 def generate_tsp_xls(
@@ -40,7 +41,7 @@ class Tsp(OptimizationProblem):
         self.gain = 0
 
     def calculate_obj_fun(self, solution: list):
-        distance = 0
+        distance: float = 0
         last_place = False
         for place in solution:
             if last_place:
@@ -48,13 +49,20 @@ class Tsp(OptimizationProblem):
             last_place = place
         return distance
 
-    def generate_dec_variable(self, data: list) -> int:
-        temp_data = list(set(self.data.keys()) - set(data))
-        return choice(temp_data)
+    def generate_dec_variable(self, notes: list) -> [int, bool]:
+        if len(notes) == 0:
+            return ['0', False]
+        temp_data = list(set(self.data.keys()) - set(notes))
+        if len(temp_data) == 0:
+            return [notes[0], True]
+        return [choice(temp_data), False]
 
     # TODO: Test this function
     def take_dec_variable_hm(self, harmony_memory: HarmonyMemory, new_harmony: list, note_index: int) -> int:
         self.gain = 0
+
+        if len(new_harmony) == len(self.data):
+            return new_harmony[0]
 
         while (note_index + self.gain) < len(harmony_memory[0])-1:
             # Try to find dec variable in note_index column of harmony memory
@@ -69,10 +77,18 @@ class Tsp(OptimizationProblem):
         new_note = choice(dec_variable_to_rand)
         return new_note
 
-    # TODO: Fix and test this function
+    # TODO: Test this function
     def pitch_adj_mechanism(self, harmony_memory: HarmonyMemory, new_harmony: list, new_note: int, hm_bandwidth: float,
                             note_index: int) -> int:
+
+        if len(new_harmony) == len(self.data):
+            return new_harmony[0]
+
         harmony_index = harmony_memory.index(new_note, note_index+self.gain)
+        while harmony_memory == -1:
+            self.gain -= 1
+            harmony_index = harmony_memory.index(new_note, note_index + self.gain)
+
         note_to_rand = []
         for note in harmony_memory[harmony_index]:
             if note not in new_harmony:
@@ -81,14 +97,22 @@ class Tsp(OptimizationProblem):
         index = int(index + hm_bandwidth * randint(-index, len(note_to_rand) - index))
         return note_to_rand[index]
 
+    def visualize_solution(self, solution: Harmony):
+        x_coordinate = []
+        y_coordinate = []
+        for note in solution:
+            x_coordinate.append(self.data[note][0])
+            y_coordinate.append(self.data[note][1])
+            plt.plot(x_coordinate, y_coordinate)
+        plt.show()
+
 
 def rand_note_for_note_index(harmony_memory: HarmonyMemory, new_harmony: list, note_index: int) -> [int, bool]:
     dec_variables: list = []
-    note_index_ = note_index
     for elem in harmony_memory:
-        dec_variables.append(elem[note_index_])
+        dec_variables.append(elem[note_index])
     dec_variable_to_rand = list(set(dec_variables) - set(new_harmony))
-    if len(dec_variable_to_rand) is not 0:
+    if len(dec_variable_to_rand) != 0:
         new_note = choice(dec_variable_to_rand)
         return [new_note, True]
     else:

@@ -7,7 +7,7 @@ class OptimizationProblem(ABC):
         pass
 
     @abstractmethod
-    def generate_dec_variable(self, data: list) -> int:
+    def generate_dec_variable(self, data: list) -> [int, bool]:
         pass
 
     @abstractmethod
@@ -17,4 +17,8 @@ class OptimizationProblem(ABC):
     @abstractmethod
     def pitch_adj_mechanism(self, harmony_memory, new_harmony: list, new_note: int, hm_bandwidth: float,
                             harmony_index: int) -> int:
+        pass
+
+    @abstractmethod
+    def visualize_solution(self, solution):
         pass
