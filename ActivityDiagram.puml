@@ -30,7 +30,6 @@ while(Główna pętla algorytmu) is (iteracja < liczba_iteracji)
 
     :iteration += 1]
 
-
 endwhile (iteracja >= liczba_iteracji)
 
 :Zwróć najlepsze rozwiązanie spośród HM]
