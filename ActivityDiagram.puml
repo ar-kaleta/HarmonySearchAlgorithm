@@ -1,16 +1,16 @@
-@startuml
+@startumlodnie z
 start
-:Inicjalizacja pamięci harmonii HM losowymi wartościami,
+:Inicjalizacja pamięci harmonii harmony_memory losowymi wartościami,
 obliczanie wartość funkcji celu dla każdej harmonii.]
 :iteration = 1]
-while(Główna pętla algorytmu) is (iteracja < liczba_iteracji)
+while(Główna pętla algorytmu) is (iteracja < num_of_iterations)
     : note_index = 1]
-    while(Tworzenie nowego rozwiązania new_harmony, \n przechodzenie po elementach rozwiązania) is (note_index < num_of_note_index)
+    while(Tworzenie nowego rozwiązania new_harmony, \n przechodzenie po elementach rozwiązania) is (not new_harmony.is_completed())
 
-        if (rand > HMCR) then (Tak)
-            :Wybieranie losowego rozwiązania z HM, o indeksie rand_index]
-            :new_note = HM(rand_index, note_index)]
-            if (rand > PAR) then (Tak)
+        if (rand < hm_considering_rate) then (Tak)
+            :Wybieranie losowego rozwiązania z harmony_memory, o indeksie rand_index]
+            :new_note = harmony_memory(rand_index, note_index)]
+            if (rand < hm_pitch_adjusting_rate) then (Tak)
                 :Skorzystanie z mechanizmu dostrajania wysokości tonu]
             else(Nie)
             endif
@@ -21,18 +21,18 @@ while(Główna pętla algorytmu) is (iteracja < liczba_iteracji)
         :new_harmony[note_index] = new_note]
         :note_index += 1]
 
-    endwhile (note_index > num_of_note_index)
+    endwhile (new_harmony.is_completed())
     :Obliczenie wartości funkcji celu dla new_harmony]
-    if (Czy nowe rozwiązanie jest lepsze, pod względem funkcji celu, od najgorszego z HM) then (Tak)
+    if (Czy nowe rozwiązanie jest lepsze, pod względem funkcji celu, od najgorszego z harmony_memory) then (Tak)
         :Zamiana rozwiązań]
     else(Nie)
     endif
 
     :iteration += 1]
 
-endwhile (iteracja >= liczba_iteracji)
+endwhile (iteracja >= num_of_iterations)
 
-:Zwróć najlepsze rozwiązanie spośród HM]
+:Zwróć najlepsze rozwiązanie spośród harmony_memory]
 
 end
 @enduml
