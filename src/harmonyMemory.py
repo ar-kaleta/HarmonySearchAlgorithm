@@ -1,16 +1,20 @@
 from typing import List
-from src.optimizationProblem import OptimizationProblem
+from src.optimizationProblem import OptimizationProblem, DoNotUseLastReturnedValue
 
 
 class Harmony:
     def __init__(self, opt_problem: OptimizationProblem) -> None:
         self.notes = []
         self.val_of_object_fun = 0
-        is_complete = 0
 
-        while not is_complete:
-            [new_note, is_complete] = opt_problem.generate_dec_variable(self.notes)
-            self.notes.append(new_note)
+        while not opt_problem.is_harmony_complete():
+            try:
+                new_note = opt_problem.generate_dec_variable(self.notes)
+                self.notes.append(new_note)
+            except DoNotUseLastReturnedValue:  # If harmony is completed do not use last returned value
+                pass
+        else:
+            opt_problem.complete_harmony()
         self.val_of_object_fun = opt_problem.calculate_obj_fun(self.notes)
 
     def __getitem__(self, item):
@@ -56,8 +60,27 @@ class HarmonyMemory:
     def __len__(self):
         return len(self.harmonies)
 
-    def index(self, value_to_find: int, note_index):
+    def index(self, value_to_find: str, note_index, gain: int):
         for index in range(0, len(self.harmonies)):
-            if self.harmonies[index][note_index] == value_to_find:
-                return index
-        return -1
+            try:
+                if self.harmonies[index][note_index+gain] == value_to_find:
+                    return [index, gain]
+            except IndexError:  # If harmony doesn't exist try for next index
+                pass
+        for elem in self.harmonies:
+            try:
+                index = elem.notes.index(value_to_find)
+                gain = index - note_index  # correct gain
+                index = self.harmonies.index(elem)
+                return [index, gain]
+            except ValueError:  # If elem[value to find] doesn't exist try for next elem
+                pass
+        raise ValueError
+
+    def max_note_index(self):
+        ans = 0
+        for elem in self.harmonies:
+            tmp = len(elem.notes)
+            if tmp > ans:
+                ans = tmp
+        return ans
