@@ -57,7 +57,7 @@ def convert_txt_to_xls(original_file_name, new_file_name):
 class Tsp(OptimizationProblem):
     def __init__(self, filename: str = 'DataTsp'):
         super().__init__()
-        df = read_excel('../testcases/' + filename + '.xlsx')
+        df = read_excel('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/testcases/' + filename + '.xlsx')
         # data are saved as 'place_id': (x_coordinate, y_coordinate)
         self.data = {str(df.loc[i][0]): (df.loc[i][1], df.loc[i][2]) for i in range(df.index[-1] + 1)}
         self.distance = count_distance(self.data)
@@ -83,6 +83,23 @@ class Tsp(OptimizationProblem):
 
         self.data = {key: value for (key, value) in zip(distance.keys(), [(0, 0)]*len(distance.keys()))}
         self.distance = distance
+
+    def use_tsp_data(self, file_name):
+        self.visualization = True
+        with open('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/datasets/tsp/' + file_name + '.tsp') as file:
+            data = {}
+            i = 0
+            for line in file:
+                if i < 6:
+                    i += 1
+                    continue
+                if line == 'EOF\n':
+                    break
+                line_list = line.split()
+                data[str(line_list[0])] = (int(line_list[1]), int(line_list[2]))
+
+        self.data = data
+        self.distance = count_distance(self.data)
 
     def calculate_obj_fun(self, harmony: list):
         distance: float = 0

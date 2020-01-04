@@ -1,3 +1,4 @@
+'''
 import time
 from src.tsp import Tsp, generate_tsp_xls, convert_txt_to_xls
 from src.kp import Kp, generate_kp_xls
@@ -44,3 +45,9 @@ if optimization_problem.visualization:
 # plt.gca().invert_xaxis()
 # plt.show()
 print("execution time: " + str(time.time() - start))
+'''
+
+
+
+
+use_tsp_data('pr76')

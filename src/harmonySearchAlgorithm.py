@@ -11,7 +11,8 @@ def harmony_search_algorithm(
         hm_pitch_adjusting_rate,
         hm_bandwidth,
         opt_problem: OptimizationProblem,
-        out_data: OutputData
+        out_data: OutputData,
+        expected_value=None
 ) -> HarmonyMemory:
     # initialize the harmony memory randomly and calculate object function
     harmony_memory = HarmonyMemory(num_of_rows_hm, opt_problem)
@@ -54,4 +55,6 @@ def harmony_search_algorithm(
                 harmony_memory[len(harmony_memory) - 1].notes = new_harmony
                 harmony_memory[len(harmony_memory) - 1].val_of_object_fun = val_of_object_fun
         iteration = iteration + 1
+        if expected_value and harmony_memory[0].val_of_object_fun <= expected_value:
+            return harmony_memory
     return harmony_memory

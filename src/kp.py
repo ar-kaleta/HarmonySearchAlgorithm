@@ -28,7 +28,7 @@ def generate_kp_xls(
 class Kp(OptimizationProblem):
     def __init__(self, filename: str = 'DataKp', capacity: int = 1000):
         super().__init__()
-        df = read_excel('../testcases/' + filename + '.xlsx')
+        df = read_excel('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/testcases/' + filename + '.xlsx')
         # data are saved as 'object_id': (weight, value)
         self.data = {str(df.index[i]): (df.loc[i][1], df.loc[i][2]) for i in range(df.index[-1] + 1)}
         self.capacity = capacity
