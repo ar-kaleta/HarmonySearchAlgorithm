@@ -90,13 +90,13 @@ class Tsp(OptimizationProblem):
             data = {}
             i = 0
             for line in file:
-                if i < 6:
+                if i < 1:
                     i += 1
                     continue
                 if line == 'EOF\n':
                     break
                 line_list = line.split()
-                data[str(line_list[0])] = (int(line_list[1]), int(line_list[2]))
+                data[str(line_list[0])] = (int(float(line_list[1])), int(float(line_list[2])))
 
         self.data = data
         self.distance = count_distance(self.data)

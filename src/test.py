@@ -25,7 +25,7 @@ output_data = OutputData(filename)
 parameters = []
 obj_functions = []
 best_obj_fun = 1000000
-
+start = time.time()
 x = harmony_search_algorithm(
     num_of_rows_hm=num_of_rows_hm,
     num_of_iterations=num_of_iterations,
@@ -36,7 +36,7 @@ x = harmony_search_algorithm(
     out_data=output_data,
     expected_value=expected_value
 )
-
+print("execution time: " + str(time.time() - start))
 output_data.plot_data('N = ' + str(num_of_rows_hm) + 'PAR = ' + str(hm_pitch_adjusting_rate) + 'BW = ' + str(hm_bandwidth))
 output_data.data_to_xls()
 print(str(filename) + ' N = ' + str(num_of_rows_hm) + ' PAR = ' + str(hm_pitch_adjusting_rate), 'BW = ' + str(hm_bandwidth), ' iteration = ' + str(num_of_iterations))
@@ -49,4 +49,4 @@ try:
 except Exception as e:
     print(e)
 
-print("execution time: " + str(time.time() - start))
+
