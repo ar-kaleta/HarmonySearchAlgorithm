@@ -47,7 +47,7 @@ def harmony_search_algorithm(
         val_of_object_fun = opt_problem.calculate_obj_fun(new_harmony)
 
         # comparing new harmony with the worst from the memory by the objective function and exchanging solutions
-        if harmony_memory[-1].val_of_object_fun >= val_of_object_fun:
+        if opt_problem.exchange_solution(harmony_memory[-1].val_of_object_fun >= val_of_object_fun):
             if (new_harmony, val_of_object_fun) not in harmony_memory:
                 # saving new_harmony obj. function in output data
                 out_data.add_data(iteration, val_of_object_fun)

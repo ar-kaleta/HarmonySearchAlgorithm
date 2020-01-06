@@ -31,6 +31,9 @@ class OptimizationProblem(ABC):
     def visualise_solution(self, harmony):
         pass
 
+    @abstractmethod
+    def exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun) -> bool:
+        pass
 
 class DoNotUseLastReturnedValue(BaseException):
     pass

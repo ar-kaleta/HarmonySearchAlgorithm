@@ -117,3 +117,6 @@ class Kp(OptimizationProblem):
 
     def is_harmony_complete(self):
         return self.complete
+
+    def exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun) -> bool:
+        return worst_hm_obj_fun <= new_sol_obj_fun
