@@ -24,6 +24,8 @@ class Tsp{
     + complete_harmony(self)
     + visualise_solution(self, harmony)
     + is_harmony_complete(self)
+    + exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun)
+    + reverse_sort(self)
 }
 class Kp{
     + data
@@ -37,6 +39,8 @@ class Kp{
     + complete_harmony(self)
     + visualise_solution(self, harmony)
     + is_harmony_complete(self)
+    + exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun)
+    + reverse_sort(self)
 }
 interface OptimizationProblem{
     {abstract} + calculate_obj_function(self, harmony)
@@ -46,6 +50,9 @@ interface OptimizationProblem{
     {abstract} + complete_harmony(self)
     {abstract} + visualise_solution(self, harmony)
     {abstract} + is_harmony_complete(self)
+    {abstract} + exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun)
+    {abstract} + reverse_sort(self)
+
 }
 class OutputData{
     + obj_functions
@@ -64,7 +71,7 @@ OptimizationProblem <|-- Kp
 HarmonyMemory o-- Harmony
 Harmony <.. OptimizationProblem : uses
 
-note "harmony_search_algorithm(num_of_rows_hm, num_of_iterations, hm_considering_rate, hm_pitch_adjusting_rate, hm_bandwidth, opt_problem, out_data)" as alg
+note "harmony_search_algorithm(num_of_rows_hm, num_of_iterations, hm_considering_rate, hm_pitch_adjusting_rate, hm_bandwidth, opt_problem, out_data, expected_value)" as alg
 alg <.. OptimizationProblem : uses
 alg <.. HarmonyMemory : uses
 alg <.. OutputData : uses

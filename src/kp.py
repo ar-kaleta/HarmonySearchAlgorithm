@@ -36,6 +36,29 @@ class Kp(OptimizationProblem):
         self.complete = False
         self.gain = 0
 
+    def use_txt_data(self, file_name):
+        with open('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/datasets/kp/' + file_name + '_c.txt') as file:
+            for line in file:
+                if line == '\n':
+                    break
+                else:
+                    self.capacity = int(line)
+                    self.available_cap = self.capacity
+        weight = []
+        profits = []
+        object_id = []
+        i = 0
+        with open('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/datasets/kp/' + file_name + '_w.txt') as file:
+            for line in file:
+                weight.append(line)
+                object_id.append(i)
+                i += 1
+        with open('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/datasets/kp/' + file_name + '_p.txt') as file:
+            for line in file:
+                profits.append(line)
+
+        self.data = {str(object_id[ind]): (int(weight[ind]), int(profits[ind])) for ind in range(len(weight))}
+
     def calculate_obj_fun(self, harmony):
         worth: int = 0
         for elem in harmony:
@@ -50,7 +73,7 @@ class Kp(OptimizationProblem):
                 raise DoNotUseLastReturnedValue
             obj = temp_data.pop(temp_data.index(choice(temp_data)))
             weight = self.data[obj][0]
-            if weight < self.available_cap:
+            if weight <= self.available_cap:
                 self.available_cap -= weight
                 return obj
 
@@ -102,10 +125,11 @@ class Kp(OptimizationProblem):
 
         notes_to_rand = []
         for note in harmony_memory[harmony_index]:
-            if (note not in new_harmony and self.data[note][1] < self.available_cap) or note == new_note:
+            if (note not in new_harmony and self.data[note][0] <= (self.available_cap + self.data[harmony_memory[harmony_index][note_index + self.gain]][0])) or note == new_note:
                 notes_to_rand.append(note)
         index = notes_to_rand.index(new_note)
         index = int(index + hm_bandwidth * randint(-index, len(notes_to_rand) - index))
+        self.available_cap += self.data[harmony_memory[harmony_index][note_index + self.gain]][0] - self.data[notes_to_rand[index]][0]
         return notes_to_rand[index]
 
     def complete_harmony(self):
@@ -118,5 +142,8 @@ class Kp(OptimizationProblem):
     def is_harmony_complete(self):
         return self.complete
 
-    def exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun) -> bool:
-        return worst_hm_obj_fun <= new_sol_obj_fun
+    def reverse_sort(self):
+        return True
+
+    def is_first_better_obj_fun(self, first, second):
+        return first > second

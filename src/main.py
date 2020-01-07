@@ -1,5 +1,6 @@
-'''
+
 import time
+'''
 from src.tsp import Tsp, generate_tsp_xls, convert_txt_to_xls
 from src.kp import Kp, generate_kp_xls
 from src.outputData import OutputData
@@ -47,7 +48,42 @@ if optimization_problem.visualization:
 print("execution time: " + str(time.time() - start))
 '''
 
+from itertools import combinations
+
+from pandas import read_excel
 
 
+def kp_xls_brute_force(filename, capacity):
 
-use_tsp_data('pr76')
+    def anycomb(items):
+        ' return combinations of any length from the items '
+        return (comb
+                for r in range(1, len(items) + 1)
+                for comb in combinations(items, r)
+                )
+
+    def totalvalue(comb):
+        ' Totalise a particular combination of items'
+        totwt = totval = 0
+        for item, wt, val in comb:
+            totwt += wt
+            totval += val
+        return (totval, -totwt) if totwt <= capacity else (0, 0)
+
+    df = read_excel('C:/Users/Artur/PycharmProjects/Harmony Search Algorithm/testcases/' + filename + '.xlsx')
+    # data are saved as (place_id, x_coordinate, y_coordinate)
+    items = tuple(((str(df.loc[i][0]), df.loc[i][1], df.loc[i][2]) for i in range(df.index[-1] + 1)))
+
+    start = time.time()
+    bagged = max(anycomb(items), key=totalvalue)
+    print("execution time: " + str(time.time() - start))
+
+    print("Bagged the following items\n  " +
+          '\n  '.join(sorted(item for item,_,_ in bagged)))
+    val, wt = totalvalue(bagged)
+    print("for a total value of %i and a total weight of %i" % (val, -wt))
+
+
+filename = 'kp29'
+capacity = 1000
+kp_xls_brute_force(filename, capacity)

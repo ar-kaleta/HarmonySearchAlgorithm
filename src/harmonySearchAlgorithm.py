@@ -42,12 +42,12 @@ def harmony_search_algorithm(
         else:
             opt_problem.complete_harmony()
 
-        harmony_memory.harmonies.sort(key=lambda harmony: harmony.val_of_object_fun, reverse=False)
+        harmony_memory.harmonies.sort(key=lambda harmony: harmony.val_of_object_fun, reverse=opt_problem.reverse_sort())
         # calculating new harmony objective function value
         val_of_object_fun = opt_problem.calculate_obj_fun(new_harmony)
 
         # comparing new harmony with the worst from the memory by the objective function and exchanging solutions
-        if opt_problem.exchange_solution(harmony_memory[-1].val_of_object_fun >= val_of_object_fun):
+        if opt_problem.is_first_better_obj_fun(val_of_object_fun, harmony_memory[-1].val_of_object_fun):
             if (new_harmony, val_of_object_fun) not in harmony_memory:
                 # saving new_harmony obj. function in output data
                 out_data.add_data(iteration, val_of_object_fun)
@@ -55,6 +55,6 @@ def harmony_search_algorithm(
                 harmony_memory[len(harmony_memory) - 1].notes = new_harmony
                 harmony_memory[len(harmony_memory) - 1].val_of_object_fun = val_of_object_fun
         iteration = iteration + 1
-        if expected_value and harmony_memory[0].val_of_object_fun <= expected_value:
+        if expected_value and opt_problem.is_first_better_obj_fun(harmony_memory[0].val_of_object_fun, int(expected_value)):
             return harmony_memory
     return harmony_memory

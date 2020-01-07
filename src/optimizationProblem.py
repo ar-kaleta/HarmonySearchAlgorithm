@@ -32,8 +32,11 @@ class OptimizationProblem(ABC):
         pass
 
     @abstractmethod
-    def exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun) -> bool:
+    def reverse_sort(self) -> bool:
         pass
 
+    @abstractmethod
+    def is_first_better_obj_fun(self, first, second) -> bool:
+        pass
 class DoNotUseLastReturnedValue(BaseException):
     pass

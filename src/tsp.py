@@ -180,9 +180,11 @@ class Tsp(OptimizationProblem):
     def is_harmony_complete(self):
         return self.complete
 
-    def exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun) -> bool:
-        return worst_hm_obj_fun >= new_sol_obj_fun
+    def reverse_sort(self):
+        return False
 
+    def is_first_better_obj_fun(self, first, second):
+        return first < second
 
 def count_distance(data: dict) -> dict:
     t_displacements = {}

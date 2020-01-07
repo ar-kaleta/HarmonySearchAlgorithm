@@ -3,9 +3,9 @@ start
 :Inicjalizacja pamięci harmonii harmony_memory losowymi wartościami,
 obliczanie wartość funkcji celu dla każdej harmonii.]
 :iteration = 1]
-while(Główna pętla algorytmu) is (iteracja < num_of_iterations)
+while(Główna pętla algorytmu) is (iteracja < num_of_iterations oraz \nwartość funkcji celu najlepszej harmonii jest gorsza od optymalnej)
     : note_index = 1]
-    while(Tworzenie nowego rozwiązania new_harmony, \n przechodzenie po elementach rozwiązania) is (not new_harmony.is_completed())
+    while(Tworzenie nowego rozwiązania new_harmony, \nprzechodzenie po elementach rozwiązania) is (not new_harmony.is_completed())
 
         if (rand < hm_considering_rate) then (Tak)
             :Wybieranie losowego rozwiązania z harmony_memory, o indeksie rand_index]
@@ -30,7 +30,7 @@ while(Główna pętla algorytmu) is (iteracja < num_of_iterations)
 
     :iteration += 1]
 
-endwhile (iteracja >= num_of_iterations)
+endwhile (iteracja >= num_of_iterations lub \nwartość funkcji celu najlepszej harmonii jest lepsza od optymalnej)
 
 :Zwróć najlepsze rozwiązanie spośród harmony_memory]
 
